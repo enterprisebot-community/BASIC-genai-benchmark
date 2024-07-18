@@ -32,7 +32,7 @@ TODO: 1. Automate the final_evals.csv (maybe read all results in results that st
 """
 
 available_models = ["claude-3-opus-20240229", "gpt-3.5-turbo-0125", "gpt-4",
-					"claude-3-5-sonnet-20240620", "gpt-4o"]
+					"claude-3-5-sonnet-20240620", "gpt-4o", "gpt-4-turbo"]
 
 
 def answer_accuracy(row):
@@ -212,7 +212,7 @@ def final_evaluation():
 	average_csv_path = os.path.join(directory, 'Final_BASIC_Rankings.csv')
 	average_df.to_csv(average_csv_path, index=False)
 
-	print(f"{average_csv_path} updated")
+	return f"{average_csv_path} updated"
 
 
 if __name__ == "__main__":
@@ -232,3 +232,4 @@ if __name__ == "__main__":
 		Debug(f"Available models: {available_models}")
 
 	Debug(final_evaluation())
+
