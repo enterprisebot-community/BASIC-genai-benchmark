@@ -18,6 +18,8 @@ from utils import Debug
     can be one of the following:
     - gpt-4o
     - gpt-4
+    - gpt-4-turbo
+    - gpt-4o-mini
     - gpt-3.5-turbo-0125
     - claude-3-opus-20240229
     - claude-3-5-sonnet-20240620
@@ -32,7 +34,7 @@ TODO: 1. Automate the final_evals.csv (maybe read all results in results that st
 """
 
 available_models = ["claude-3-opus-20240229", "gpt-3.5-turbo-0125", "gpt-4",
-					"claude-3-5-sonnet-20240620", "gpt-4o", "gpt-4-turbo"]
+					"claude-3-5-sonnet-20240620", "gpt-4o", "gpt-4-turbo", "gpt-4o-mini"]
 
 
 def answer_accuracy(row):
@@ -55,6 +57,7 @@ def get_accuracy(system_prompt, user_input):
 # Calculate the cost of a query answer + question
 def calculateModelCost(model, output_token_usage, input_token_usage):
 	model_prices_input = {
+		"gpt-4o-mini": 0.000000150, # US$0.15 / 1M input tokens
 		"gpt-4o": 0.000005,  # US$5.00 / 1M input tokens
 		"gpt-4": 0.00003,  # US$30.00 / 1M input tokens
 		"gpt-4-turbo": 0.00001,  # US$10.00 / 1M input tokens
@@ -67,6 +70,7 @@ def calculateModelCost(model, output_token_usage, input_token_usage):
 	}
 
 	model_prices_output = {
+		"gpt-4o-mini": 0.0000006, # US$0.60 / 1M output tokens
 		"gpt-4o": 0.000015,  # US$15.00 / 1M output tokens
 		"gpt-4": 0.00006,  # US$60.00 / 1M output tokens
 		"gpt-4-turbo": 0.00003,  # US$10.00 / 1M output tokens
