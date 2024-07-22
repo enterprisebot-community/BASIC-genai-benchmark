@@ -57,29 +57,29 @@ def get_accuracy(system_prompt, user_input):
 # Calculate the cost of a query answer + question
 def calculateModelCost(model, output_token_usage, input_token_usage):
 	model_prices_input = {
-		"gpt-4o-mini": 0.000000150, # US$0.15 / 1M input tokens
+		"gpt-4o-mini": 0.000000150,  # US$0.15 / 1M input tokens
 		"gpt-4o": 0.000005,  # US$5.00 / 1M input tokens
 		"gpt-4": 0.00003,  # US$30.00 / 1M input tokens
 		"gpt-4-turbo": 0.00001,  # US$10.00 / 1M input tokens
 		"gpt-3.5-turbo-0125": 0.0000005,  # US$0.50 / 1M input tokens
-		"claude-3-opus-20240229": 0.000015, # US$15.00 / 1M input tokens
-		"claude-3-5-sonnet-20240620": 0.000003, # US$3.00 / 1M input tokens
-		"gemini-1.0-pro": 0.0000005, # US$0.50 / 1M input tokens
-		"gemini-1.5-pro": 0.0000035, # US$3.50 / 1M input tokens
-		"gemini-1.5-flash": 0.00000035 # US$0.35 / 1M input tokens
+		"claude-3-opus-20240229": 0.000015,  # US$15.00 / 1M input tokens
+		"claude-3-5-sonnet-20240620": 0.000003,  # US$3.00 / 1M input tokens
+		"gemini-1.0-pro": 0.0000005,  # US$0.50 / 1M input tokens
+		"gemini-1.5-pro": 0.0000035,  # US$3.50 / 1M input tokens
+		"gemini-1.5-flash": 0.00000035  # US$0.35 / 1M input tokens
 	}
 
 	model_prices_output = {
-		"gpt-4o-mini": 0.0000006, # US$0.60 / 1M output tokens
+		"gpt-4o-mini": 0.0000006,  # US$0.60 / 1M output tokens
 		"gpt-4o": 0.000015,  # US$15.00 / 1M output tokens
 		"gpt-4": 0.00006,  # US$60.00 / 1M output tokens
 		"gpt-4-turbo": 0.00003,  # US$10.00 / 1M output tokens
 		"gpt-3.5-turbo-0125": 0.0000015,  # US$1.50 / 1M output tokens
-		"claude-3-opus-20240229": 0.000075, # US$75.00 / 1M output tokens
-		"claude-3-5-sonnet-20240620": 0.000015, # US$15.00 / 1M output tokens
-		"gemini-1.0-pro": 0.0000015, # US$1.50 / 1M output tokens
-		"gemini-1.5-pro": 0.0000105, # US$10.50 / 1M output tokens
-		"gemini-1.5-flash": 0.0000021 # US$2.10 / 1M output tokens
+		"claude-3-opus-20240229": 0.000075,  # US$75.00 / 1M output tokens
+		"claude-3-5-sonnet-20240620": 0.000015,  # US$15.00 / 1M output tokens
+		"gemini-1.0-pro": 0.0000015,  # US$1.50 / 1M output tokens
+		"gemini-1.5-pro": 0.0000105,  # US$10.50 / 1M output tokens
+		"gemini-1.5-flash": 0.0000021  # US$2.10 / 1M output tokens
 	}
 
 	if model not in model_prices_output or model not in model_prices_input:
@@ -89,7 +89,7 @@ def calculateModelCost(model, output_token_usage, input_token_usage):
 	return cost
 
 
-def evaluate_model(target_model):
+def evaluate_model(target_model, dataset="dataset/basic-dataset-1.csv"):
 	load_dotenv()
 
 	if target_model not in available_models:
@@ -166,9 +166,14 @@ def evaluate_model(target_model):
 
 	if client is not None:
 		Debug("Generating answers")
-		df = pd.read_csv("dataset/basic-dataset-1.csv")
-		results = df.apply(answer_generation, axis=1, result_type='expand')
-		df[['predicted_answer', 'cost', 'length', 'time taken']] = results
+		df = pd.read_csv(dataset)
+		try:
+			results = df.apply(answer_generation, axis=1, result_type='expand')
+			df[['predicted_answer', 'cost', 'length', 'time taken']] = results
+		except Exception as e:
+			Debug(f"Error: {e}")
+			Debug("Error occurred while generating answers")
+			return
 
 		Debug("Calculating accuracy")
 		df["accuracy"] = df.apply(answer_accuracy, axis=1)
@@ -219,14 +224,36 @@ def final_evaluation():
 	return f"{average_csv_path} updated"
 
 
+# prompts for the user to select a dataset to evaluate a model on
+def list_datasets():
+	datasets = os.listdir("dataset")
+	Debug("Available datasets:")
+	for i, dataset in enumerate(datasets):
+		if dataset.endswith(".csv"):
+			Debug(f"{i + 1}. {dataset}")
+	dataset_index = input("\nEnter the number of the dataset you want to evaluate the model/s on: ")
+
+	# if valid dataset selected, return the dataset and say "using dataset <dataset>"
+	# else, if not valid, return None and say "invalid dataset selected, using default dataset"
+	try:
+		dataset = f"dataset/{datasets[int(dataset_index) - 1]}"
+		Debug(f"Using dataset {dataset}")
+		return dataset
+	except:
+		Debug("Invalid dataset selected, using default dataset")
+		return "dataset/basic-dataset-1.csv"
+
+
 if __name__ == "__main__":
 	load_dotenv()
+
+	dataset = list_datasets()
 
 	if len(sys.argv) < 2:
 		Debug("Evaluating all available models")
 		print("=" * 10)
 		for model in available_models:
-			evaluate_model(model)
+			evaluate_model(model, dataset)
 			print("=" * 10)
 		Debug("Evaluation complete")
 	elif sys.argv[1] in available_models:
@@ -236,4 +263,3 @@ if __name__ == "__main__":
 		Debug(f"Available models: {available_models}")
 
 	Debug(final_evaluation())
-
