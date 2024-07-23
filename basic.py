@@ -241,17 +241,24 @@ def final_evaluation(result_path):
 
 # prompts for the user to select a dataset to evaluate a model on
 def list_datasets():
-    datasets = os.listdir("dataset")
-    Debug("Available datasets:")
-    for i, dataset in enumerate(datasets):
+    print("\nAvailable datasets:\n")
+
+    # add all .csv files in the dataset folder to the list of datasets
+    dataset_list = []
+
+    for i, dataset in enumerate(os.listdir("dataset")):
         if dataset.endswith(".csv"):
-            Debug(f"{i + 1}. {dataset}")
+            dataset_list.append(dataset)
+
+    for i, dataset in enumerate(dataset_list):
+        print(f"{i + 1}. {dataset}")
+
     dataset_index = input("\nEnter the number of the dataset you want to evaluate the model/s on: ")
 
     # if valid dataset selected, return the dataset and say "using dataset <dataset>"
     # else, if not valid, return None and say "invalid dataset selected, using default dataset"
     try:
-        dataset = f"dataset/{datasets[int(dataset_index) - 1]}"
+        dataset = f"dataset/{dataset_list[int(dataset_index) - 1]}"
         Debug(f"Using dataset {dataset}")
         return dataset
     except:
