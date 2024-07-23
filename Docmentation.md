@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://enterprisebot.ai/">
-    <img alt="Enterprise Bot" title="Enterprise Bot" src="./logo.svg" width="400" style="color: black">
+    <img alt="Enterprise Bot" title="Enterprise Bot" src="images/logo.svg" width="400" style="color: black">
   </a>
 </p>
 
@@ -25,7 +25,7 @@ This documentation provides an overview of the benchmarking tool and how differe
 The structure of the benchmarking tool is as follows:
 
 
-![img.png](img.png)
+![img.png](images/img.png)
 
 
 #### 1. Dataset Generation 

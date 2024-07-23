@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://enterprisebot.ai/">
-    <img alt="Enterprise Bot" title="Enterprise Bot" src="./logo.svg" width="400" style="color: black">
+    <img alt="Enterprise Bot" title="Enterprise Bot" src="images/logo.svg" width="400" style="color: black">
   </a>
 </p>
 
@@ -67,18 +67,10 @@ python basic.py
 ### Running using custom datasets
 
 You can run the benchmark using your own datasets by adding the dataset to the `dataset` folder. The dataset should 
-be in a `.csv` file with each line containing a ```question```, ```answer``` and ```context``` in that order. You can then 
-run the benchmark with your dataset using the following command:
+be in a `.csv` file with each line containing a ```question```, ```answer``` and ```context``` in that order. You 
+will then be prompted to choose the dataset you want to use when running the benchmark.
 
-```bash
-python basic.py <dataset_name>
-```
-
-or to run the benchmark with a specific model and dataset:
-
-```bash
-python basic.py <model> <dataset_name>
-```
+![](images/custom-dataset.png)
 
 
 ### Adding new models
