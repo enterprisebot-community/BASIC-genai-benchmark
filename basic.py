@@ -26,15 +26,16 @@ from utils import Debug
     - claude-3-5-sonnet-20240620
     - gemini-1.5-pro
     - gemini-1.5-flash
+    - llama-3.1-405b-instruct
     
 
 
 This script will evaluate the performance of the model/s on the dataset and output the results to a CSV file.
 
-TODO: 1. Automate the final_evals.csv (maybe read all results in results that start with BASIC_Eval and combine the averages)
 """
 
-available_models = ["meta/llama-3.1-405b-instruct"]
+
+available_models = ["gpt-3.5-turbo-0125", "gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4o-mini", "meta/llama-3.1-405b-instruct", "claude-3-5-sonnet-20240620", "gemini-1.5-pro"]
 
 
 def answer_accuracy(row):
