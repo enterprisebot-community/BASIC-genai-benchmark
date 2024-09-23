@@ -115,7 +115,7 @@ def evaluate_model(target_model, dataset):
 
 		gemini_client = genai.GenerativeModel(model_name=target_model)
 	elif "llama" in target_model:
-		from custom_model import get_llama_response
+		from custom_model import get_custom_response
 
 		client = True
 
@@ -167,7 +167,7 @@ def evaluate_model(target_model, dataset):
 			messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_input}]
 
 			start = time.time()
-			answer, input_token_usage, output_token_usage = get_llama_response(target_model, messages)
+			answer, input_token_usage, output_token_usage = get_custom_response(target_model, messages)
 			total_time = time.time() - start
 
 		cost = calculateModelCost(target_model, output_token_usage, input_token_usage)

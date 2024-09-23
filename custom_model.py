@@ -4,9 +4,8 @@ import requests
 from dotenv import load_dotenv
 
 
-# gets llama response and returns answer + tokens used
-def get_llama_response(target_model, messages):
-
+# Takes in the target model and messages to generate a custom response using a provider API
+def get_custom_response(target_model, messages):
 	load_dotenv()
 
 	stream = False
@@ -26,8 +25,6 @@ def get_llama_response(target_model, messages):
 	}
 
 	response = requests.post(url, headers=headers, json=data)
-
-	# lets use choices.message.content
 
 	if response.status_code != 200:
 		print(f"ERROR:{response.json()}")
