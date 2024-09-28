@@ -59,6 +59,8 @@ def get_accuracy(system_prompt, user_input):
 def calculateModelCost(model, output_token_usage, input_token_usage):
 	model_prices_input = {
 		"meta/llama-3.1-405b-instruct": 0.00000533,  # US$5.33 / 1M input tokens
+		"mistral/mistral-large": 0.000004,  # US$4.00 / 1M input tokens
+		"qwen/qwen-2.5-72b": 0.000000,  # ?
 		"gpt-4o-mini": 0.000000150,  # US$0.15 / 1M input tokens
 		"gpt-4o": 0.000005,  # US$5.00 / 1M input tokens
 		"gpt-4": 0.00003,  # US$30.00 / 1M input tokens
@@ -73,6 +75,8 @@ def calculateModelCost(model, output_token_usage, input_token_usage):
 
 	model_prices_output = {
 		"meta/llama-3.1-405b-instruct": 0.000016,  # US$16.00 / 1M output tokens
+		"mistral/mistral-large": 0.000012,  # US$12.00 / 1M output tokens
+		"qwen/qwen-2.5-72b": 0.000000,  # ?
 		"gpt-4o-mini": 0.0000006,  # US$0.60 / 1M output tokens
 		"gpt-4o": 0.000015,  # US$15.00 / 1M output tokens
 		"gpt-4": 0.00006,  # US$60.00 / 1M output tokens
