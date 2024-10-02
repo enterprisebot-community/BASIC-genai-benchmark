@@ -6,6 +6,8 @@ from botocore.exceptions import ClientError
 import requests
 from dotenv import load_dotenv
 
+from utils import Debug
+
 
 # Takes in the target model and messages to generate a custom response using a provider API
 def get_custom_response(target_model, messages):
@@ -45,6 +47,8 @@ def get_custom_response(target_model, messages):
 def get_bedrock_response(target_model, messages):
 	load_dotenv()
 
+	Debug("Getting Bedrock response")
+
 	client = boto3.client("bedrock-runtime", region_name=os.environ.get("AWS_REGION"))
 
 	# Convert messages to the required format
@@ -68,6 +72,11 @@ def get_bedrock_response(target_model, messages):
 		response_text = response["output"]["message"]["content"][0]["text"]
 		input_tokens = response["usage"]["inputTokens"]
 		output_tokens = response["usage"]["outputTokens"]
+
+		Debug(f"Completion Tokens:{output_tokens}")
+
+		# only print first 20 characters of response
+		Debug(f"Bedrock Response:{(lambda x: x[:20])(response_text)}")
 
 		return response_text, input_tokens, output_tokens
 

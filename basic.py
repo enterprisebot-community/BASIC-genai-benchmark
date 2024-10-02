@@ -40,7 +40,7 @@ This script will evaluate the performance of the model/s on the dataset and outp
 # "meta/llama-3.1-405b-instruct", "claude-3-5-sonnet-20240620", "gemini-1.5-pro"]
 
 # bedrock models
-available_models = ["bedrock-meta.llama3-70b-instruct-v1:0", "bedrock-meta.llama3-2-90b-instruct-v1:0", "bedrock-mistral.mistral-large-2402-v1:0", "bedrock-ai21.jamba-1-5-large-v1:0"]
+available_models = ["bedrock-meta.llama3-70b-instruct-v1:0"]
 
 
 def answer_accuracy(row):
@@ -243,8 +243,16 @@ def evaluate_model(target_model, dataset):
 		if "/" in target_model:
 			target_model = target_model.replace("/", "-")
 
+		# check if target_model contains a ., if so, replace it with a -
+		if "." in target_model:
+			target_model = target_model.replace(".", "-")
+
+		# check if target_model contains a :, if so, replace it with a -
+		if ":" in target_model:
+			target_model = target_model.replace(":", "-")
+
 		df.to_csv(f"results/{dataset_name}/results_{target_model}.csv")
-		Debug(f"Results saved to results/{dataset_name}/results{target_model}.csv")
+		Debug(f"Results saved to results/{dataset_name}/results_{target_model}.csv")
 
 
 def final_evaluation(result_path):
@@ -343,4 +351,4 @@ if __name__ == "__main__":
 
 	result_path = dataset.split("/")[-1].replace(".csv", "")
 
-	Debug(final_evaluation(result_path))
+	#Debug(final_evaluation(result_path))
