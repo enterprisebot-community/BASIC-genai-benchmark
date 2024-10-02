@@ -4,6 +4,7 @@ import time
 import pandas as pd
 from dotenv import load_dotenv
 
+from custom_model import get_bedrock_response
 from utils import Debug
 
 """TO RUN: 
@@ -35,7 +36,11 @@ This script will evaluate the performance of the model/s on the dataset and outp
 """
 
 
-available_models = ["gpt-3.5-turbo-0125", "gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4o-mini", "meta/llama-3.1-405b-instruct", "claude-3-5-sonnet-20240620", "gemini-1.5-pro"]
+# available_models = ["gpt-3.5-turbo-0125", "gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4o-mini",
+# "meta/llama-3.1-405b-instruct", "claude-3-5-sonnet-20240620", "gemini-1.5-pro"]
+
+# bedrock models
+available_models = ["bedrock-meta.llama3-70b-instruct-v1:0", "bedrock-meta.llama3-2-90b-instruct-v1:0", "bedrock-mistral.mistral-large-2402-v1:0", "bedrock-ai21.jamba-1-5-large-v1:0"]
 
 
 def answer_accuracy(row):
@@ -58,32 +63,48 @@ def get_accuracy(system_prompt, user_input):
 # Calculate the cost of a query answer + question
 def calculateModelCost(model, output_token_usage, input_token_usage):
 	model_prices_input = {
+		"bedrock-meta.llama3-70b-instruct-v1:0": 0.00000099,  # US$0.99 / 1M input tokens
+		"bedrock-meta.llama3-2-90b-instruct-v1:0": 0.000002,  # US$2.00 / 1M input tokens
+		"bedrock-mistral.mistral-large-2402-v1:0": 0.000004,  # US$4.00 / 1M input tokens
+		"bedrock-ai21.jamba-1-5-large-v1:0": 0.000002,  # US$2.00 / 1M input tokens
+		
 		"meta/llama-3.1-405b-instruct": 0.00000533,  # US$5.33 / 1M input tokens
 		"mistral/mistral-large": 0.000004,  # US$4.00 / 1M input tokens
 		"qwen/qwen-2.5-72b": 0.000000,  # ?
+
 		"gpt-4o-mini": 0.000000150,  # US$0.15 / 1M input tokens
 		"gpt-4o": 0.000005,  # US$5.00 / 1M input tokens
 		"gpt-4": 0.00003,  # US$30.00 / 1M input tokens
 		"gpt-4-turbo": 0.00001,  # US$10.00 / 1M input tokens
 		"gpt-3.5-turbo-0125": 0.0000005,  # US$0.50 / 1M input tokens
+
 		"claude-3-opus-20240229": 0.000015,  # US$15.00 / 1M input tokens
 		"claude-3-5-sonnet-20240620": 0.000003,  # US$3.00 / 1M input tokens
+
 		"gemini-1.0-pro": 0.0000005,  # US$0.50 / 1M input tokens
 		"gemini-1.5-pro": 0.0000035,  # US$3.50 / 1M input tokens
 		"gemini-1.5-flash": 0.00000035  # US$0.35 / 1M input tokens
 	}
 
 	model_prices_output = {
+		"bedrock-meta.llama3-70b-instruct-v1:0": 0.00000099,  # US$0.99 / 1M output tokens
+		"bedrock-meta.llama3-2-90b-instruct-v1:0": 0.000002,  # US$2.00 / 1M output tokens
+		"bedrock-mistral.mistral-large-2402-v1:0": 0.000012,  # US$12.00 / 1M output tokens
+		"bedrock-ai21.jamba-1-5-large-v1:0": 0.000008,  # US$8.00 / 1M output tokens
+
 		"meta/llama-3.1-405b-instruct": 0.000016,  # US$16.00 / 1M output tokens
 		"mistral/mistral-large": 0.000012,  # US$12.00 / 1M output tokens
 		"qwen/qwen-2.5-72b": 0.000000,  # ?
+
 		"gpt-4o-mini": 0.0000006,  # US$0.60 / 1M output tokens
 		"gpt-4o": 0.000015,  # US$15.00 / 1M output tokens
 		"gpt-4": 0.00006,  # US$60.00 / 1M output tokens
 		"gpt-4-turbo": 0.00003,  # US$10.00 / 1M output tokens
 		"gpt-3.5-turbo-0125": 0.0000015,  # US$1.50 / 1M output tokens
+
 		"claude-3-opus-20240229": 0.000075,  # US$75.00 / 1M output tokens
 		"claude-3-5-sonnet-20240620": 0.000015,  # US$15.00 / 1M output tokens
+
 		"gemini-1.0-pro": 0.0000015,  # US$1.50 / 1M output tokens
 		"gemini-1.5-pro": 0.0000105,  # US$10.50 / 1M output tokens
 		"gemini-1.5-flash": 0.0000021  # US$2.10 / 1M output tokens
@@ -165,6 +186,17 @@ def evaluate_model(target_model, dataset):
 
 			input_token_usage = gemini_client.count_tokens(messages)
 			output_token_usage = gemini_client.count_tokens(completion.history)
+
+		elif "bedrock" in target_model:
+
+			# trim "bedrock-" from the target_model
+			model_id = target_model[8:]
+
+			messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_input}]
+
+			start = time.time()
+			answer, input_token_usage, output_token_usage = get_bedrock_response(model_id, messages)
+			total_time = time.time() - start
 
 		elif "llama" in target_model:
 
