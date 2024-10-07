@@ -39,7 +39,8 @@ This script will evaluate the performance of the model/s on the dataset and outp
 # available_models = ["gpt-3.5-turbo-0125", "gpt-4", "gpt-4o", "gpt-4-turbo", "gpt-4o-mini",
 # "meta/llama-3.1-405b-instruct", "claude-3-5-sonnet-20240620", "gemini-1.5-pro"]
 
-available_models = ["gpt-4o"]
+available_models = ["meta/llama-3.1-405b-instruct"]
+
 
 
 def answer_accuracy(row):
@@ -67,8 +68,9 @@ def calculateModelCost(model, output_token_usage, input_token_usage):
 
 		"meta/llama-3.1-405b-instruct": 0.00000533,  # US$5.33 / 1M input tokens
 		"mistral/mistral-large": 0.000004,  # US$4.00 / 1M input tokens
-		"qwen/qwen-2.5-72b": 0.000000,  # ?
+		"qwen/qwen-2.5-72b": 0.00000063,  # US$0.63 / 1M input tokens
 		"meta/llama-3.2-90b-vision": 0.000002,  # US$2.00 / 1M input tokens
+		"google/gemma-2-27b": 0.0000008,  # US$0.80 / 1M input tokens
 
 		"gpt-4o-mini": 0.000000150,  # US$0.15 / 1M input tokens
 		"gpt-4o": 0.000005,  # US$5.00 / 1M input tokens
@@ -91,8 +93,9 @@ def calculateModelCost(model, output_token_usage, input_token_usage):
 
 		"meta/llama-3.1-405b-instruct": 0.000016,  # US$16.00 / 1M output tokens
 		"mistral/mistral-large": 0.000012,  # US$12.00 / 1M output tokens
-		"qwen/qwen-2.5-72b": 0.000000,  # ?
+		"qwen/qwen-2.5-72b": 0.00000065,  # US$0.65 / 1M input tokens
 		"meta/llama-3.2-90b-vision": 0.000002,  # US$2.00 / 1M output tokens
+		"google/gemma-2-27b": 0.0000008, # US$0.80 / 1M output tokens
 
 		"gpt-4o-mini": 0.0000006,  # US$0.60 / 1M output tokens
 		"gpt-4o": 0.000015,  # US$15.00 / 1M output tokens
@@ -137,7 +140,7 @@ def evaluate_model(target_model, dataset):
 		import google.generativeai as genai
 
 		gemini_client = genai.GenerativeModel(model_name=target_model)
-	elif "llama" or "mistral" in target_model:
+	elif "llama" or "mistral" or "qwen" in target_model:
 		from custom_model import get_custom_response, get_bedrock_response
 
 		client = True
@@ -156,8 +159,7 @@ def evaluate_model(target_model, dataset):
 			messages = [{"role": "user", "content": user_input}]
 
 			start = time.time()
-			message = client.messages.create(max_tokens=2096, system=system_prompt, messages=messages,
-			                                 model=target_model)
+			message = client.messages.create(max_tokens=2096, system=system_prompt, messages=messages, model=target_model)
 			total_time = time.time() - start
 			answer = message.content[0].text
 
@@ -199,7 +201,7 @@ def evaluate_model(target_model, dataset):
 			answer, input_token_usage, output_token_usage = get_bedrock_response(model_id, messages)
 			total_time = time.time() - start
 
-		elif "llama" or "mistral" in target_model:
+		elif "llama" or "mistral" or "gemma" or "qwen" in target_model:
 
 			messages = [{"role": "system", "content": system_prompt}, {"role": "user", "content": user_input}]
 
