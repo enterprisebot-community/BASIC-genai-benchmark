@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://enterprisebot.ai/">
-    <img alt="Enterprise Bot" title="Enterprise Bot" src="./logo.svg" width="400" style="color: black">
+    <img alt="Enterprise Bot" title="Enterprise Bot" src="images/logo.svg" width="400" style="color: black">
   </a>
 </p>
 
@@ -21,6 +21,12 @@ Benchmarking Enterprise AI
 ## Getting Started
 
 Follow these instructions to set up the [BASIC benchmarking tool](https://www.enterprisebot.ai/blog/back-to-basics-a-generative-ai-benchmark-for-enterprise) on your local machine to evaluate [LLMs](https://en.wikipedia.org/wiki/Large_language_model) on key metrics like accuracy, contextual understanding, compliance, consistency, and performance.
+
+These instructions will get you a copy of the [BASIC](https://www.enterprisebot.ai/blog/back-to-basics-a-generative-ai-benchmark-for-enterprise) benchmarking tool up and running on your local 
+machine for evaluation purposes. 
+
+### How it works
+For more information on how the benchmarking tool works, refer to the [documentation page](Docmentation.md)
 
 ### Installing the tool
 
@@ -79,6 +85,8 @@ To run the benchmark with a specific model and dataset:
 python basic.py <model> <dataset_name>
 ```
 
+![](images/custom-dataset.png)
+
 
 ### Adding new models
 
@@ -105,5 +113,8 @@ def calculateModelCost(model, token_usage):
 
 ```
 
+### Results 
+
+Results are added to the `/results` folder. You can view our results in the [`/001-llm-benchmark-results`](https://github.com/ritza-co/BASIC-enterprise-ai-benchmark/blob/add-chatbot-results/results/001-llm-benchmark-results/Final_BASIC_Rankings.csv) folder.
 
 
