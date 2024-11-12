@@ -22,9 +22,6 @@ Benchmarking Enterprise AI
 
 Follow these instructions to set up the [BASIC benchmarking tool](https://www.enterprisebot.ai/blog/back-to-basics-a-generative-ai-benchmark-for-enterprise) on your local machine to evaluate [LLMs](https://en.wikipedia.org/wiki/Large_language_model) on key metrics like accuracy, contextual understanding, compliance, consistency, and performance.
 
-These instructions will get you a copy of the [BASIC](https://www.enterprisebot.ai/blog/back-to-basics-a-generative-ai-benchmark-for-enterprise) benchmarking tool up and running on your local 
-machine for evaluation purposes. 
-
 ### How it works
 For more information on how the benchmarking tool works, refer to the [documentation page](Docmentation.md)
 
